@@ -1,28 +1,26 @@
 pipeline {
     agent any
-    
-    environment {
-        NODEJS_HOME = tool name: 'NodeJs', type: 'NodeJSInstallation'
-    }
     stages {
+        stage('Checkout') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/dev']], userRemoteConfigs: [[url: 'https://github.com/vinodbvast/sample-node-project.git']]])
+            }
+        }
         stage('Build') {
             steps {
-                sh 'npm install';
+                sh 'npm install'
             }
-            tools {
-    nodejs "NodeJs"
-}
         }
         stage('Test') {
             steps {
-                sh './test.sh';
+                sh './test.sh'
             }
         }
         stage('Deliver') {
             steps {
-                sh './deliver.sh';
-                input message: 'Finished using the web site? (Click "Proceed" to continue)';
-                sh './kill.sh';
+                sh './deliver.sh'
+                input message: 'Finished using the web site? (Click "Proceed" to continue)'
+                sh './kill.sh'
             }
         }
     }
